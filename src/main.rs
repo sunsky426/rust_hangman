@@ -1,5 +1,3 @@
-#[allow(non_snake_case)]
-
 use std::io;
 use std::process::Command;
 
@@ -33,6 +31,7 @@ impl Hangman{
         }
     }
 
+    #[allow(non_snake_case)]
     fn guess(&mut self, guess: char) {
         let mut isAccurateGuess = false;
 
