@@ -15,6 +15,11 @@ const HANGINGMAN: &'static [&'static str] = &[
     "\n\n\n\n\n\n"
     ];
 
+enum GameState{
+    InProgress,
+    Victory,
+    Defeat
+}
 struct Hangman{
     answer: Vec<char>,
     progress: Vec<bool>,
@@ -33,7 +38,7 @@ impl Hangman{
     }
 
     #[allow(non_snake_case)]
-    fn guess(&mut self, guess: char) -> bool{
+    fn guess(&mut self, guess: char){
         let mut isAccurateGuess = false;
 
         for i in 0..self.answer.len(){
@@ -44,14 +49,8 @@ impl Hangman{
         }
 
         if !isAccurateGuess{
-            if self.life > 0{
-                self.life -= 1;
-            }else{
-                println!("GAME OVER");
-                return true;
-            }    
+            self.life -= 1; 
         }
-        return false;
     }
 
     fn display(&self) {
@@ -66,25 +65,39 @@ impl Hangman{
         }
     println!("")
     }
+
+    fn update_gamestate(&self) -> GameState{
+        if self.progress.iter().all(|x| *x){
+            println!("You Won");
+            return GameState::Victory;
+        }else if self.life == 0{
+            println!("GAME OVER");
+            return GameState::Defeat;
+        }else{
+            return GameState::InProgress;
+        }
+    }
 }
 
 fn main() {
-    let mut game_over = false;
+    let mut game_state = GameState::InProgress;
     let stdin = io::stdin();
     let mut game = Hangman::new(String::from("malloc"));
 
     clear();
-    while !game.progress.iter().all(|x| *x){
+    loop{
         game.display();
 
         let mut user_input = String::new();
         stdin.read_line(&mut user_input).unwrap();
-        clear();
-        if game_over{
-            break;
+        match game_state{
+            GameState::Victory | GameState::Defeat => break,
+            GameState::InProgress => {},
         }
+        clear();
 
-        game_over = game.guess(user_input.chars().nth(0).unwrap());
+        game.guess(user_input.chars().nth(0).unwrap());
+        game_state = game.update_gamestate();
     }
 }
 
