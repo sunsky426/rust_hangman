@@ -32,7 +32,7 @@ impl Hangman{
     }
 
     #[allow(non_snake_case)]
-    fn guess(&mut self, guess: char) {
+    fn guess(&mut self, guess: char) -> bool{
         let mut isAccurateGuess = false;
 
         for i in 0..self.answer.len(){
@@ -46,9 +46,11 @@ impl Hangman{
             if self.life > 0{
                 self.life -= 1;
             }else{
-                println!("GAME OVER")
+                println!("GAME OVER");
+                return true;
             }    
         }
+        return false;
     }
 
     fn display(&self) {
@@ -66,16 +68,22 @@ impl Hangman{
 }
 
 fn main() {
+    let mut game_over = false;
     let stdin = io::stdin();
     let mut game = Hangman::new(String::from("malloc"));
 
+    clear();
     while !game.progress.iter().all(|x| *x){
+        game.display();
+
         let mut user_input = String::new();
         stdin.read_line(&mut user_input).unwrap();
         clear();
+        if game_over{
+            break;
+        }
 
-        game.guess(user_input.chars().nth(0).unwrap());
-        game.display();
+        game_over = game.guess(user_input.chars().nth(0).unwrap());
     }
 }
 
