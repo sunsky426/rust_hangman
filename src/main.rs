@@ -12,7 +12,8 @@ const HANGINGMAN: &'static [&'static str] = &[
     "+-----+\n|\n|\n|\n|\n|\n===+=======",
     "\n|\n|\n|\n|\n|\n===+=======",
     "\n\n\n\n\n\n===+=======",
-    "\n\n\n\n\n\n"];
+    "\n\n\n\n\n\n"
+    ];
 
 struct Hangman{
     answer: Vec<char>,
