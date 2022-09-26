@@ -15,7 +15,7 @@ const HANGINGMAN: &'static [&'static str] = &[
     "\n\n\n\n\n\n"
     ];
 
-enum GameState{
+enum GameStatus{
     InProgress,
     Victory,
     Defeat
@@ -24,6 +24,7 @@ struct Hangman{
     answer: Vec<char>,
     progress: Vec<bool>,
     life: usize,
+    game_status: GameStatus,
 }
 
 impl Hangman{
@@ -34,6 +35,7 @@ impl Hangman{
             answer: char_list,
             progress: no_progress,
             life: 10,
+            game_status: GameStatus::InProgress,
         }
     }
 
@@ -66,21 +68,18 @@ impl Hangman{
     println!("")
     }
 
-    fn update_gamestate(&self) -> GameState{
+    fn update_gamestatus(&mut self) {
         if self.progress.iter().all(|x| *x){
             println!("You Won");
-            return GameState::Victory;
+            self.game_status = GameStatus::Victory;
         }else if self.life == 0{
             println!("GAME OVER");
-            return GameState::Defeat;
-        }else{
-            return GameState::InProgress;
+            self.game_status = GameStatus::Defeat;
         }
     }
 }
 
 fn main() {
-    let mut game_state = GameState::InProgress;
     let stdin = io::stdin();
     let mut game = Hangman::new(String::from("malloc"));
 
@@ -90,14 +89,14 @@ fn main() {
 
         let mut user_input = String::new();
         stdin.read_line(&mut user_input).unwrap();
-        match game_state{
-            GameState::Victory | GameState::Defeat => break,
-            GameState::InProgress => {},
+        match game.game_status{
+            GameStatus::Victory | GameStatus::Defeat => break,
+            GameStatus::InProgress => {},
         }
         clear();
 
         game.guess(user_input.chars().nth(0).unwrap());
-        game_state = game.update_gamestate();
+        game.update_gamestatus();
     }
 }
 
