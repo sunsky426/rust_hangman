@@ -67,10 +67,11 @@ impl GameData{
 
     pub fn update_gamestatus(&mut self) {
         if self.progress.iter().all(|x| *x){
-            println!("You Won");
+            println!("YOU WON \nhit enter to exit");
             self.game_status = GameStatus::Victory;
         }else if self.life == 0{
-            println!("GAME OVER");
+            println!("GAME OVER \nhit enter to exit");
+            self.progress = vec![true; self.progress.len()];
             self.game_status = GameStatus::Defeat;
         }
     }

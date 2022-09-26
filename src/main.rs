@@ -1,13 +1,13 @@
 mod game_data;
 
-use std::io;
+use std::{io, path::Path, fs};
+use rand::{Rng, thread_rng};
 use std::process::Command;
-use game_data::GameData;
-use game_data::GameStatus;
+use game_data::{GameData, GameStatus};
 
 fn main() {
     let stdin = io::stdin();
-    let mut game = GameData::new(String::from("malloc"));
+    let mut game = GameData::new(choose_answer(Path::new("./src/words.txt")));
 
     clear();
     loop{
@@ -32,4 +32,11 @@ fn clear(){
     }else{
         Command::new("clear").status().unwrap();
     }
+}
+
+fn choose_answer(path: &Path) -> String{
+    let content = fs::read_to_string(path).expect("Can not read file");
+    let content:Vec<&str> = content.lines().collect();
+    let index = thread_rng().gen_range(1..content.len());
+    content[index].to_owned()
 }
